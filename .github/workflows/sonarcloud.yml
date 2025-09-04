@@ -12,7 +12,7 @@ jobs:
     name: Build and Analyze
     runs-on: ubuntu-latest # Use a GitHub-hosted runner
     # Optional: Increase timeout if analysis is very long
-    timeout-minutes: 60 
+    timeout-minutes: 60
 
     steps:
       - name: Checkout code
@@ -38,10 +38,8 @@ jobs:
         with:
           projectBaseDir: . # The directory where your code resides (usually the root)
           args: >
-            # Replace with your actual organization and project keys
             -Dsonar.organization=fioresalmetto-bot
             -Dsonar.projectKey=fioresalmetto-bot_vertex-ai-creative-studio
-            # Include the properties file for exclusions (from previous discussion)
             -Dsonar.project.properties=sonar-project.properties
             # Optional: Add more specific scanner arguments if needed
             # -Dsonar.python.version=3.9 # Example if you want to specify Python version for analysis
