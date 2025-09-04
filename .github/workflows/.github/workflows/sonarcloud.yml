@@ -1,0 +1,47 @@
+name: Build and Analyze
+
+on:
+  push:
+    branches:
+      - main # Adjust to your default branch if not 'main'
+  pull_request:
+    types: [opened, synchronize, reopened] # Triggers on PR creation, update, and reopen
+
+jobs:
+  build:
+    name: Build and Analyze
+    runs-on: ubuntu-latest # Use a GitHub-hosted runner
+    # Optional: Increase timeout if analysis is very long
+    timeout-minutes: 60 
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0 # Mandatory for SonarCloud analysis
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x' # Or '3.9', '3.10', '3.11' depending on your project
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt # Assuming you have a requirements.txt
+
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Provided by GitHub Actions
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }} # Your secret from Step 2
+        with:
+          projectBaseDir: . # The directory where your code resides (usually the root)
+          args: >
+            # Replace with your actual organization and project keys
+            -Dsonar.organization=fioresalmetto-bot
+            -Dsonar.projectKey=fioresalmetto-bot_vertex-ai-creative-studio
+            # Include the properties file for exclusions (from previous discussion)
+            -Dsonar.project.properties=sonar-project.properties
+            # Optional: Add more specific scanner arguments if needed
+            # -Dsonar.python.version=3.9 # Example if you want to specify Python version for analysis
